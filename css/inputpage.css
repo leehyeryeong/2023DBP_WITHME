@@ -1,0 +1,19 @@
+.text-area {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5%;
+}
+
+.title {
+    width: 20%;
+    margin-bottom: 1.5%;
+}
+.content {
+    width: 100%;
+    height: 30rem;
+    margin-bottom: 1.5%;
+}
+
+.submit {
+    float: right;
+}

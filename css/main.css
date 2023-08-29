@@ -1,0 +1,13 @@
+.search {
+    float: right;
+    margin-top: 100px;
+    margin-right: 30px;
+}
+
+table {
+    margin-top: 200px;
+}
+
+tr, th, td {
+    text-align: center;
+}
