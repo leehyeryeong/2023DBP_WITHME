@@ -116,4 +116,64 @@ app.get('/detail/:postId', async (req, res) => {
   }
 });
 
+app.get('/edit/:postId', async (req, res) => {
+  const postId = req.params.postId;
+
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+
+    const sql = `SELECT post_id, post_title, content FROM posts WHERE post_id = :postId`;
+    const binds = { postId };
+
+    const result = await connection.execute(sql, binds);
+    const postInfo = result.rows[0];
+
+    await connection.close();
+
+    res.render('edit', { postInfo });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('오류가 발생했습니다.');
+  }
+});
+
+app.post('/edit/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const newPostTitle = req.body.newPostTitle;
+  const newContent = req.body.newContent
+
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+
+    const checkPasswordSql = `SELECT password FROM posts WHERE post_id = :postId`;
+    const checkPasswordBinds = { postId };
+
+    const checkPasswordResult = await connection.execute(checkPasswordSql, checkPasswordBinds);
+    const correctPassword = checkPasswordResult.rows[0][0];
+
+    await connection.close();
+
+    if (req.body.password !== correctPassword) {
+      res.status(400).send('비밀번호가 일치하지 않습니다. 수정이 취소되었습니다.');
+      return;
+    }
+
+    const updateSql = `UPDATE posts SET post_title = :newPostTitle, content = :newContent WHERE post_id = :postId`;
+    const updateBinds = {
+      newPostTitle,
+      newContent,
+      postId
+    };
+
+    const updateConnection = await oracledb.getConnection(dbConfig);
+    await updateConnection.execute(updateSql, updateBinds, { autoCommit: true });
+    await updateConnection.close();
+
+    res.redirect(`/detail/${postId}`); // 수정 성공 시 detail 페이지로 이동
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('오류가 발생했습니다.');
+  }
+});
+
 module.exports = app;
