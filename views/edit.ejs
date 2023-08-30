@@ -32,8 +32,8 @@
   <form method="post" action="/edit/<%= postInfo[0] %>">
     <div class="container">
       <div class="text-area">
-        <input type="text" class="title" id="newPostTitle" name="newPostTitle" value="<%= postInfo.post_title %>" required>
-        <input type="text" class="content" id="newContent" name="newContent" value="<%= postInfo.content %>" required/>
+        <input type="text" class="title" id="newPostTitle" name="newPostTitle" value="<%= postInfo.post_title %>" placeholder="제목을 작성해주세요" required>
+        <input type="text" class="content" id="newContent" name="newContent" value="<%= postInfo.content %>" placeholder="내용을 작성해주세요" required/>
       </div>
       <div class="user-chk">
         <input type="password" name="password" id="password" placeholder="비밀번호 확인" required/>
