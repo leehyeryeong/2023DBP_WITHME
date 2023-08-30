@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WITHME</title>
+    <link rel="stylesheet" href="/css/inputpage.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">WITHME</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/">글 목록</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/inputpage.html">작성하기</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <form method="post" action="/delete/<%= postInfo[0] %>">
+    <div class="container">
+      <h2>정말로 게시글을 삭제하시겠습니까?</h2>
+      <div class="user-chk">
+        <input type="password" name="password" id="password" placeholder="비밀번호 확인" required/>
+        <button class="delete" type="submit">삭제</button>
+      </div>
+    </div>
+  </form>
+</body>
+</html>

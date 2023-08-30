@@ -18,11 +18,11 @@ app.get('index', (req, res) => {
 });
 
 app.get('/inputpage', (req, res) => {
-  res.sendFile(__dirname + '/html/inputpage.html');
+  res.sendFile(__dirname + '/views/inputpage.html');
 });
 
 app.get('/inputpage.html', (req, res) => {
-  res.sendFile(__dirname + '/html/inputpage.html');
+  res.sendFile(__dirname + '/views/inputpage.html');
 });
 
 function formatDate(date) {
@@ -77,7 +77,7 @@ app.post('/write', async (req, res) => {
 
     await connection.close();
 
-    res.json({ message: '글이 성공적으로 작성되었습니다.' });
+    res.redirect('/');
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ message: '글 작성 중 오류가 발생했습니다.' });
@@ -173,6 +173,64 @@ app.post('/edit/:postId', async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('오류가 발생했습니다.');
+  }
+});
+
+app.get('/delete/:postId', async (req, res) => {
+  const postId = req.params.postId;
+
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+
+    const sql = `SELECT post_id FROM posts WHERE post_id = :postId`;
+    const binds = { postId };
+
+    const result = await connection.execute(sql, binds);
+    const postInfo = result.rows[0];
+
+    await connection.close();
+
+    if (!postInfo) {
+      res.status(404).send('게시글을 찾을 수 없습니다.');
+      return;
+    }
+
+    res.render('delete', { postInfo });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('오류가 발생했습니다.');
+  }
+});
+
+app.post('/delete/:postId', async (req, res) => {
+  const postId = req.params.postId;
+  const password = req.body.password;
+
+  try {
+    const connection = await oracledb.getConnection(dbConfig);
+
+    const checkPasswordSql = `SELECT password FROM posts WHERE post_id = :postId`;
+    const checkPasswordBinds = { postId };
+
+    const checkPasswordResult = await connection.execute(checkPasswordSql, checkPasswordBinds);
+    const correctPassword = checkPasswordResult.rows[0][0];
+
+    if (password !== correctPassword) {
+      res.status(400).json({ message: '비밀번호가 일치하지 않습니다. 삭제가 취소되었습니다.' });
+      return;
+    }
+
+    const deleteSql = `DELETE FROM posts WHERE post_id = :postId`;
+    const deleteBinds = { postId };
+
+    await connection.execute(deleteSql, deleteBinds, { autoCommit: true });
+
+    await connection.close();
+
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: '오류가 발생했습니다.' });
   }
 });
 
