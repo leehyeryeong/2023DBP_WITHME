@@ -44,11 +44,11 @@
         <tr>
           <td><%= item.post_id %></td>
           <td><%= item.author %></td>
-          <td><a href="/detail/<%= item.post_id %>"><%= item.post_title %></a></td>
+          <td><a href="/detail/<%= item.post_id %>" class="title"><%= item.post_title %></a></td>
           <td><%= item.create_date %></td>
         </tr>
       <% }) %>
-    </tbody>
+    </tbody>    
   </table>
 </body>
 </html>

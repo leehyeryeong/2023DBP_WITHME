@@ -20,24 +20,37 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="./index.ejs">글 목록</a>
+            <a class="nav-link" href="index.ejs">글 목록</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./inputpage.html">작성하기</a>
+            <a class="nav-link" href="/html/inputpage.html">작성하기</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
-  <div class="content">
+  <div class="main-text">
     <div class="user">
-      <p class="author"><%= postInfo.author %></p>
+      <h4 class="author"><%= postInfo.author %></h4>
+      <div class="btn">
+        <form action="/edit/<%= postInfo.post_id %>" method="get">
+          <button type="submit" class="editbtn">수정</button>
+        </form>
+        <button type="submit" class="deletbtn" id="deletebtn">삭제</button>
+      </div>
     </div>
     <div class="content">
+      <h2 class="title"><%= postInfo.post_title %></h2>
       <p class="content-text"><%= postInfo.content %></p>
     </div>
     <p class="create-date"><%= postInfo.create_date %></p>
   </div>
-  <div class="comment"></div>
+  <div class="comment">
+    <h4 class="comment-title">댓글</h4>
+    <input type="text" id="commentInput" name="commentInput" placeholder="댓글을 작성해보세요"/>
+    <button type="submit" class="commentSubmit">작성</button>
+    <p class="comment-author"></p>
+    <p class="comment-text"></p>
+  </div>
 </body>
 </html>

@@ -8,9 +8,14 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/css', express.static('css'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs'); // EJS 뷰 엔진 사용 설정
 app.set('views', path.join(__dirname, 'views')); // 뷰 템플릿 파일이 있는 디렉토리 설정
+
+app.get('index', (req, res) => {
+  res.sendFile(__dirname + '/views/index.ejs');
+});
 
 app.get('/inputpage', (req, res) => {
   res.sendFile(__dirname + '/html/inputpage.html');
@@ -20,15 +25,28 @@ app.get('/inputpage.html', (req, res) => {
   res.sendFile(__dirname + '/html/inputpage.html');
 });
 
+function formatDate(date) {
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return new Date(date).toLocaleDateString('en-US', options);
+}
+
 app.get('/', async (req, res) => {
   try {
     const connection = await oracledb.getConnection(dbConfig);
 
-    const sql = `SELECT post_id, author, post_title, create_date FROM posts`;
+    const sql = `SELECT post_id, author, post_title, create_date FROM posts ORDER BY post_id`;
 
     const result = await connection.execute(sql);
 
-    const fetchedData = result.rows;
+    const fetchedData = result.rows.map(row => {
+      const formattedDate = formatDate(row[3]); // row[3]는 create_date 컬럼
+      return {
+        post_id: row[0],
+        author: row[1],
+        post_title: row[2],
+        create_date: formattedDate
+      };
+    });
 
     await connection.close();
 
@@ -72,17 +90,26 @@ app.get('/detail/:postId', async (req, res) => {
   try {
     const connection = await oracledb.getConnection(dbConfig);
 
-    const sql = `SELECT author, content, create_date FROM posts WHERE post_id = :postId`;
+    const sql = `SELECT post_id, author, post_title, content, create_date FROM posts WHERE post_id = :postId`;
     const binds = { postId };
 
     const result = await connection.execute(sql, binds);
 
-    const postInfo = result.rows[0]; // 첫 번째 결과만 사용 (단일 게시글 상세 정보)
+    const postInfo = result.rows[0];
 
     await connection.close();
 
+    // 데이터를 가공하여 날짜 형식을 변경 후 렌더링
+    const formattedPostInfo = {
+      post_id: postInfo[0],
+      author: postInfo[1],
+      post_title: postInfo[2],
+      content: postInfo[3],
+      create_date: formatDate(postInfo[4]) // create_date 컬럼의 날짜 포맷 변경
+    };
+
     // 데이터를 HTML 템플릿에 삽입하여 렌더링
-    res.render('detail', { postInfo });
+    res.render('detail', { postInfo: formattedPostInfo });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('오류가 발생했습니다.');

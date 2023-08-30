@@ -11,3 +11,13 @@ table {
 tr, th, td {
     text-align: center;
 }
+
+a {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+.title {
+    color: black;
+}

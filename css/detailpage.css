@@ -1,0 +1,32 @@
+.main-text {
+  margin: 50px;
+}
+
+.title {
+  margin-bottom: 30px;
+}
+
+.content {
+  border: 1px solid black;
+  padding: 50px;
+  padding-bottom: 250px;
+}
+
+.author {
+  font-size: 1.5rem;
+}
+.content-text {
+  font-size: 1.1rem;
+}
+.create-date {
+  float: right;
+  font-size: 1.1rem;
+}
+
+.btn {
+  float: right;
+}
+
+.comment {
+  margin: 50px;
+}
